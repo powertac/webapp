@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="aggreg-targets-allocations" language="groovy" pageWidth="802" pageHeight="555" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" isDefault="false" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    experiment.series_id     AS series,
+    experiment.id            AS exp_id,
+    experiment.name          AS exp_name,
+    timeslot.start_date_time AS timeslot,
+    timeslot.reference_price,
+    (select avg(al.price) from abstract_log_entry al where al.timeslot_id = timeslot.id and allocation_status = 'Success') as avg_price,
+		(select max(al.price) from abstract_log_entry al where al.timeslot_id = timeslot.id and allocation_status = 'Success') as max_price,
+		(select min(al.price) from abstract_log_entry al where al.timeslot_id = timeslot.id and allocation_status = 'Success') as min_price,
+		(select sum(s.power_target) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Consumption" and s.description = 'Set initial power target') AS initial_consumption_target,
+		(select sum(s.power_target) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Generation" and s.description = 'Set initial power target') AS initial_generation_target,
+    (select sum(s.power_target) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Consumption") AS final_consumption_target,
+		(select sum(s.power_target) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Generation") AS final_generation_target,
+		(select sum(s.power_allocated) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Consumption") AS final_consumption_allocated,
+		(select sum(s.power_allocated) from stock_entry s where s.timeslot_id=timeslot.id and s.stock_type = "Generation") AS final_generation_allocated
+FROM
+    timeslot
+INNER JOIN experiment
+ON
+    (
+        timeslot.experiment_id = experiment.id
+    );]]>
+	</queryString>
+	<field name="series" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="exp_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="exp_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="timeslot" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="reference_price" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="avg_price" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="max_price" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="min_price" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="initial_consumption_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="initial_generation_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_consumption_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_generation_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_consumption_allocated" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_generation_allocated" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="63">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="546" height="33"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Aggregate Energy Targets and Allocations]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="0" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[series]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="39" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[exp_id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="78" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[exp_name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="117" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[timeslot]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="156" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[reference_price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="195" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[avg_price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="234" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[max_price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="273" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[min_price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="312" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[initial_consumption_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="351" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[initial_generation_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="390" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_consumption_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="429" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_generation_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="468" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_consumption_allocated]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="507" y="48" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_generation_allocated]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="16">
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="0" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{series}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="39" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{exp_id}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="78" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{exp_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="117" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{timeslot}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="156" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{reference_price}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="195" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{avg_price}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="234" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{max_price}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="273" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{min_price}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="312" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{initial_consumption_target}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="351" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{initial_generation_target}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="390" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_consumption_target}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="429" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_generation_target}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="468" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_consumption_allocated}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Detail" x="507" y="0" width="39" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_generation_allocated}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="targets-and-allocations" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" isDefault="false" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" isDefault="false" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
+	<style name="Crosstab Data Text" isDefault="false" hAlign="Center"/>
+	<parameter name="experiment.id" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Please specify an experiment!"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    se.experiment_id   AS experiment_id,
+    ts.start_date_time AS start_date_time,
+    ta.name            AS name,
+    (SELECT s.power_target FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Consumption") AND (s.description = 'Set initial power target'))) AS initial_consumption_target,
+    (SELECT (-1 * s.power_target) FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Generation") AND (s.description = 'Set initial power target'))) AS initial_generation_target,
+    (SELECT (-1 * SUM(s.power_target)) FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Generation"))) AS final_generation_target,
+    (SELECT SUM(s.power_target) FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Consumption"))) AS final_consumption_target,
+    (SELECT (-1 * SUM(s.power_allocated)) FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Generation"))) AS final_generation_allocated,
+    (SELECT SUM(s.power_allocated) FROM stock_entry s WHERE ((s.experiment_id = se.experiment_id) AND (s.timeslot_id = se.timeslot_id) AND (s.trading_agent_id = se.trading_agent_id) AND (s.stock_type = "Consumption"))) AS final_consumption_allocated
+FROM
+    ((stock_entry se
+JOIN timeslot ts
+ON ((se.timeslot_id = ts.id)))
+JOIN trading_agent ta
+ON ((se.trading_agent_id = ta.id)))
+WHERE se.experiment_id=$P{experiment.id}
+GROUP BY
+    se.experiment_id,
+    ts.start_date_time,
+    ta.name,
+    initial_consumption_target,
+    initial_generation_target,
+    final_generation_target,
+    final_consumption_target,
+    final_generation_allocated,
+    final_consumption_allocated]]>
+	</queryString>
+	<field name="experiment_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="start_date_time" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="initial_consumption_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="initial_generation_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_generation_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_consumption_target" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_generation_allocated" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="final_consumption_allocated" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="70">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="263" height="33"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Energy Consumption]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="95" y="46" width="179" height="22"/>
+				<textElement/>
+				<text><![CDATA[Experiment $P{experiment.id}]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band/>
+	</pageHeader>
+	<columnHeader>
+		<band height="17">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="16" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[experiment_id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="61" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[start_date_time]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="122" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="183" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[initial_consumption_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="244" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[initial_generation_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="305" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_generation_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="366" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_consumption_target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="427" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_generation_allocated]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="488" y="0" width="61" height="15"/>
+				<textElement/>
+				<text><![CDATA[final_consumption_allocated]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{experiment_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="61" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{start_date_time}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="122" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="183" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{initial_consumption_target}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="244" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{initial_generation_target}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="305" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_generation_target}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="366" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_consumption_target}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="427" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_generation_allocated}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="488" y="0" width="61" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{final_consumption_allocated}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="11">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="122" height="20"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="122" y="0" width="308" height="20" forecolor="#666666" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single" markup="none">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[IISM Experiment Center, Karlsruhe Institue of Technology (KIT)]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>
