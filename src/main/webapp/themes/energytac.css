@@ -1,0 +1,101 @@
+@CHARSET "UTF-8";
+
+.brokerTable {
+	
+	/*border-collapse:collapse;*/
+	
+	border:4px solid black;
+	background-color:red;
+    color:blue;
+	
+}
+
+table.altrowstable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #a9c6c9;
+	border-collapse: collapse;
+}
+table.altrowstable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+	background-color: #BCEDC1;
+}
+table.altrowstable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #a9c6c9;
+}
+.oddrowcolor{
+	background-color:#d4e3e5;
+}
+.evenrowcolor{
+	background-color:#c3dde0;
+}
+
+a {
+	text-decoration:none;
+	font-family: sans-serif;
+	color: #156E09;
+
+}
+
+.navMenu {
+	background-color: white;
+	position:absolute;
+	top:150px;
+}
+
+.masterHeader {
+	background-color: #BCEDC1;
+	font-family: sans-serif;
+	font-size: 25px;
+	font-weight: bold;
+	color:#156E09;
+}
+
+
+
+h1 {
+	
+	font-family: sans-serif;
+}
+
+h2
+{
+position:absolute;
+left:400px;
+
+top:300px;
+}
+
+.masterContent {
+	position:absolute;
+	left:300px;
+	top:150px;
+}
+
+.pageTitle{
+	font-family: sans-serif;
+	font-size: 25px;
+	font-weight: bold;
+	color:#156E09;
+	
+}
+
+.error {
+	color: #ff0000;
+}
+ 
+.errorblock {
+	color: #000;
+	background-color: #ffEEEE;
+	border: 3px solid #ff0000;
+	padding: 8px;
+	margin: 16px;
+}

@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+.brokerTable {
+	
+	border-collapse:collapse;
+	border:1px solid yellow;
+	background-color:blue;
+    color:red;
+	
+}
