@@ -15,7 +15,7 @@
 </head>
 <body>
 <form:form method="POST" action="save" modelAttribute="configuration">
-<div class="pageTitle">EnergyTac Configuration</div></<br>
+<div class="pageTitle">PowerTac Configuration</div></<br>
 
 <div>
 

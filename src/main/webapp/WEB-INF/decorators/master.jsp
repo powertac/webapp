@@ -10,14 +10,14 @@
   <head>
   	<link rel='stylesheet' type='text/css' href='../themes/energytac.css'>
     <title>
-    	EnergyTac competition : <decorator:title /> 
+    	Power TAC server : <decorator:title /> 
     </title>
   </head>
   <body>
    <form:form method="GET">
     <div id="header" >
        <div><img src="../images/logos/tac_logo.png"></img></div><br>
-       <div class="masterHeader">Welcome to the EnergyTac competition</div>
+       <div class="masterHeader">Welcome to Power TAC</div>
        
     </div>
     
@@ -28,25 +28,25 @@
 		    <div class="navMenu">
 		    	 <table>
 		    	 <tr><td>
-				   <a href="/energy/tac/startgame">Start a competition</a>
+				   <a href="/admin/view/startgame">Start a competition</a>
 				 </td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/configuration">Configuration</a>
+				   <a href="/admin/view/configuration">Configuration</a>
 				 </td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/brokers">Brokers</a>
+				   <a href="/admin/view/brokers">Brokers</a>
 				</td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/customer">Customers</a>
+				   <a href="/admin/view/customer">Customers</a>
 				</td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/tariffs">Tariffs</a>
+				   <a href="/admin/view/tariffs">Tariffs</a>
 				 </td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/orderBooks">Order Books</a>
+				   <a href="/admin/view/orderBooks">Order Books</a>
 				 </td></tr>
 				 <tr><td>
-				   <a href="/energy/tac/timeSlots">Time Slots</a>
+				   <a href="/admin/view/timeSlots">Time Slots</a>
 				 </td></tr>
 				 <tr><td>
 				   <a href="#">Market Position</a>
